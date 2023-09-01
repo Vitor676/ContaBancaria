@@ -23,6 +23,8 @@ namespace Conta_Bancaria.Model
             this.saldo = saldo;
         }
 
+        public Conta() { }
+
         public int GetNumero()
         {
             return numero;
@@ -72,7 +74,7 @@ namespace Conta_Bancaria.Model
         {
             this.saldo = saldo;
         }
-        public bool Sacar(decimal valor)
+        public virtual bool Sacar(decimal valor)
         {
 
             if (this.GetSaldo() < valor)
@@ -89,9 +91,9 @@ namespace Conta_Bancaria.Model
             this.SetSaldo(this.saldo + valor);
         }
 
-        public void Visualizar()
+        public virtual void Visualizar()
         {
-            string tipo = "";
+            string tipo = string.Empty;
 
             switch (this.tipo)
             {

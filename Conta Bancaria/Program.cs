@@ -13,7 +13,7 @@ namespace Conta_Bancaria
 
             Conta c1 = new Conta(1, 123, 1, "Vitor", 1000000.00M);
 
-            c1.Visualizar();
+          /*  c1.Visualizar();
             c1.SetNumero(345);
             c1.Visualizar();
 
@@ -24,6 +24,26 @@ namespace Conta_Bancaria
             c1.Depositar(5000);
 
             c1.Visualizar();
+
+            ContaCorrente cc1 = new ContaCorrente(1, 123, 1, "Torviz", 1000.00M, 1000M);
+
+            cc1.Visualizar();
+
+            cc1.Sacar(20000000000.00M);
+
+            cc1.Visualizar();
+
+            cc1.Depositar(5000);
+
+            cc1.Visualizar(); */
+
+            ContaPoupanca cp1 = new ContaPoupanca(2, 123, 2, "Torviz", 80000000.00M, 25);
+
+            cp1.Visualizar();
+
+            cp1.Depositar(52);
+
+            cp1.Visualizar();
 
             while (true)
 

@@ -1,4 +1,5 @@
-﻿using Conta_Bancaria.Model;
+﻿using Conta_Bancaria.Controller;
+using Conta_Bancaria.Model;
 using System.Diagnostics;
 using System.Linq.Expressions;
 
@@ -9,41 +10,18 @@ namespace Conta_Bancaria
         private static ConsoleKeyInfo consoleKeyInfo;
         static void Main(string[] args)
         {
-            int opcao = 1;
+            int opcao = 1, agencia, tipo, aniversario;
+            string? titular;
+            decimal saldo, limite;
 
-            Conta c1 = new Conta(1, 123, 1, "Vitor", 1000000.00M);
+            //objeto criado para acessar a classe ContaController (uma criação de um objeto novo de ContaController)
+            ContaController contas = new();
 
-          /*  c1.Visualizar();
-            c1.SetNumero(345);
-            c1.Visualizar();
+            ContaCorrente cc1 = new ContaCorrente(contas.GerarNumero(), 123, 1, "Torviz", 1000.00M, 1000M);
+            contas.Cadastrar(cc1);
 
-            c1.Sacar(1000);
-
-            c1.Visualizar();
-
-            c1.Depositar(5000);
-
-            c1.Visualizar();
-
-            ContaCorrente cc1 = new ContaCorrente(1, 123, 1, "Torviz", 1000.00M, 1000M);
-
-            cc1.Visualizar();
-
-            cc1.Sacar(20000000000.00M);
-
-            cc1.Visualizar();
-
-            cc1.Depositar(5000);
-
-            cc1.Visualizar(); */
-
-            ContaPoupanca cp1 = new ContaPoupanca(2, 123, 2, "Torviz", 80000000.00M, 25);
-
-            cp1.Visualizar();
-
-            cp1.Depositar(52);
-
-            cp1.Visualizar();
+            ContaPoupanca cp1 = new ContaPoupanca(contas.GerarNumero(), 123, 2, "Torviz", 80000000.00M, 25);
+            contas.Cadastrar(cp1);
 
             while (true)
 
@@ -77,14 +55,66 @@ namespace Conta_Bancaria
                 Console.WriteLine("                                                     ");
                 Console.WriteLine("*****************************************************");
                 opcao = Convert.ToInt32(Console.ReadLine());
+
+                if (opcao == 9)
+                {
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("\nBanco Santo André Vem Com Noix!");
+                    Sobre();
+                    Console.ResetColor();
+                    System.Environment.Exit(0);
+                }
                 switch (opcao)
                 {
                     case 1:
-                        Console.WriteLine("Criar Conta");
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.ForegroundColor = ConsoleColor.Green;
+
+                        Console.WriteLine("Criar Conta\n\n");
+                        Console.ResetColor();
+
+                        Console.WriteLine("Digite o Número da Agência: ");
+                        agencia = Convert.ToInt32(Console.ReadLine());
+
+                        Console.WriteLine("Digite o Nome do Titular: ");
+                        titular = Console.ReadLine();
+
+                        //AQUI diz que se a variavel titular for nula(??) é para substituir por uma string empty(vazio), caso não for nula a variavel titular, é para passar o dado atribuido na variavel
+                        titular ??= string.Empty;
+
+                        do
+                        {
+                            Console.WriteLine("Digite o Tipo da Conta: ");
+                            tipo = Convert.ToInt32(Console.ReadLine());
+
+                        } while (tipo != 1 && tipo != 2);
+
+
+                        Console.WriteLine("Digite o Saldo da Conta: ");
+                        saldo = Convert.ToDecimal(Console.ReadLine());
+
+                        switch (tipo)
+                        {
+                            case 1:
+                                Console.WriteLine("Digite o Limite da Conta: ");
+                                limite = Convert.ToDecimal(Console.ReadLine());
+
+                                contas.Cadastrar(new ContaCorrente(contas.GerarNumero(), agencia, tipo, titular, saldo, limite));
+                                break;
+                            case 2:
+                                Console.WriteLine("Digite o Aniversário da Conta: ");
+                                aniversario = Convert.ToInt32(Console.ReadLine());
+
+                                contas.Cadastrar(new ContaPoupanca(contas.GerarNumero(), agencia, tipo, titular, saldo, aniversario));
+                                break;
+                        }
+
                         KeyPress();
                         break;
                     case 2:
                         Console.WriteLine("Listar todas as Contas");
+                        contas.ListarTodas();
                         KeyPress();
                         break;
                     case 3:
@@ -115,27 +145,17 @@ namespace Conta_Bancaria
 
                         KeyPress();
                         break;
-                    case 9:
-                        Console.WriteLine("Sair");
-                        KeyPress();
-                        Sobre();
-                        break; 
+
+
+
                     default:
 
                         Console.WriteLine("Opção Inválida!");
                         KeyPress();
-                        break; 
+                        break;
 
                 }
             }
-        }
-        static void KeyPress()
-        {
-            do
-            {
-                Console.Write("Pressione Enter para Continuar");
-                consoleKeyInfo = Console.ReadKey();
-            } while (consoleKeyInfo.Key != ConsoleKey.Enter);
         }
         static void Sobre()
         {
@@ -144,6 +164,14 @@ namespace Conta_Bancaria
             Console.WriteLine("vitorsousa676@gmail.com");
             Console.WriteLine("github.com/Vitor676");
             Console.WriteLine("*********************************************************");
+        }
+        static void KeyPress()
+        {
+            do
+            {
+                Console.Write("Pressione Enter para Continuar");
+                consoleKeyInfo = Console.ReadKey();
+            } while (consoleKeyInfo.Key != ConsoleKey.Enter);
         }
     }
 }

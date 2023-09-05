@@ -1,6 +1,7 @@
 ﻿using Conta_Bancaria.Controller;
 using Conta_Bancaria.Model;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq.Expressions;
 
 namespace Conta_Bancaria
@@ -10,7 +11,7 @@ namespace Conta_Bancaria
         private static ConsoleKeyInfo consoleKeyInfo;
         static void Main(string[] args)
         {
-            int opcao = 1, agencia, tipo, aniversario;
+            int opcao = 1, agencia, tipo, aniversario, numero;
             string? titular;
             decimal saldo, limite;
 
@@ -54,7 +55,17 @@ namespace Conta_Bancaria
                 Console.WriteLine("                  Digite a Sua Opção                 ");
                 Console.WriteLine("                                                     ");
                 Console.WriteLine("*****************************************************");
-                opcao = Convert.ToInt32(Console.ReadLine());
+                try
+                {
+                    opcao = Convert.ToInt32(Console.ReadLine());
+                }
+                catch (FormatException)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("Digite um valor inteiro entre 1 e 9");
+                    opcao = 0;
+                    Console.ResetColor();
+                }
 
                 if (opcao == 9)
                 {
@@ -117,19 +128,79 @@ namespace Conta_Bancaria
                         contas.ListarTodas();
                         KeyPress();
                         break;
+
                     case 3:
                         Console.WriteLine("Buscar Conta pelo Numero");
-                        KeyPress();
-                        break;
-                    case 4:
-                        Console.WriteLine("Atualizar dados da Conta");
-                        KeyPress();
-                        break;
-                    case 5:
-                        Console.WriteLine("Apagar a Conta");
+
+                        Console.WriteLine("Digite o número da conta");
+                        numero = Convert.ToInt32(Console.ReadLine());
+
+
+                        contas.ProcurarPorNumero(numero);
 
                         KeyPress();
                         break;
+
+                    case 4:
+
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("Atualizar dados da Conta\n\n");
+                        Console.ResetColor();
+
+                        Console.WriteLine("Digite o número da Conta: ");
+                        numero = Convert.ToInt32(Console.ReadLine());
+
+                        var conta = contas.BuscarNaCollection(numero);
+
+                        if (conta is not null)
+                        {
+                            Console.WriteLine("Digite o Número da Agência: ");
+                            agencia = Convert.ToInt32(Console.ReadLine());
+
+                            Console.WriteLine("Digite o Nome do Titular: ");
+                            titular = Console.ReadLine();
+
+                            titular ??= string.Empty;
+
+                            Console.WriteLine("Digite o Saldo da Conta: ");
+                            saldo = Convert.ToDecimal(Console.ReadLine());
+
+                            tipo = conta.GetTipo();
+
+                            switch (tipo)
+                            {
+                                case 1:
+                                    Console.WriteLine("Digite o Limite da Conta: ");
+                                    limite = Convert.ToDecimal(Console.ReadLine());
+
+                                    contas.Atualizar(new ContaCorrente(numero, agencia, tipo, titular, saldo, limite));
+                                    break;
+                                case 2:
+                                    Console.WriteLine("Digite o dia do Aniversário da Conta: ");
+                                    aniversario = Convert.ToInt32(Console.ReadLine());
+
+                                    contas.Atualizar(new ContaPoupanca(numero, agencia, tipo, titular, saldo, aniversario));
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine($"A conta numero {numero} não foi encontrada!");
+                            Console.ResetColor();
+                        }
+                        KeyPress();
+                        break;
+
+                    case 5:
+                        Console.WriteLine("Apagar a Conta");
+
+                        Console.WriteLine("Digite o número da conta");
+                        numero = Convert.ToInt32(Console.ReadLine());
+
+                        KeyPress();
+                        break;
+
                     case 6:
                         Console.WriteLine("Saque");
 
